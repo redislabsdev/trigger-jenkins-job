@@ -24,7 +24,7 @@ inputs:
   verbose: # true/false - turns on verbose logging
     description: 'true/false - turns on verbose logging'
     required: false
-    default: false
+    default: true
   parameters:
     description: 'build parameters in the format: KEY1=VALUE KEY2=VALUE'
     required: false
@@ -82,7 +82,7 @@ runs:
         #Generate Crumb value
         CRUMB=`curl -s -u "$userName:$password" $urlOfJenkinsServer'/crumbIssuer/api/xml?xpath=concat(//crumbRequestField,":",//crumb)'`
         echo "curl -s -X POST -u \"$userName:$password\" -H \"$CRUMB\" \"$urlOfJenkinsServer\"/job/\"$jenkinsJobName/$BUILDCMD\""
-        TRIGGERJOBJSON=$(curl -s -X POST -u "$userName:$password" "$PARAMARGS" -H "$CRUMB" "$urlOfJenkinsServer/job/$jenkinsJobName/$BUILDCMD" $FILEPARAMARGS)
+        TRIGGERJOBJSON=$(curl -v -X POST -u "$userName:$password" "$PARAMARGS" -H "$CRUMB" "$urlOfJenkinsServer/job/$jenkinsJobName/$BUILDCMD" $FILEPARAMARGS 2>&1)
         
         if [[ $verbose == true ]]; then
           echo "Results of Triggering The Job:"
@@ -93,13 +93,13 @@ runs:
 
         #STEP 2: Did STEP 1 return a 201. If so, continue, if not, stop the script
         #Regex to get the queue URL
-        regex="Location:\s*(http.*\/queue\/item\/([0-9]+)\/)"
-        #Does the returned value contain 201 Created
-        if [[ "$TRIGGERJOBJSON" == *"201 Created"* ]]; then
+        regex="location:\s*(http.*\/queue\/item\/([0-9]+)\/)"
+        #Does the returned value contain HTTP/2 201
+        if [[ "$TRIGGERJOBJSON" == *"HTTP/2 201"* ]]; then
           echo "Job triggered successfully"
           echo "--------------------------------------"
         else
-          echo "201 Created NOT FOUND. Exiting script with error"
+          echo "HTTP/2 201 NOT FOUND. Exiting script with error"
           echo "--------------------------------------"
           exit 1
         fi
