@@ -28,6 +28,9 @@ inputs:
   parameters:
     description: 'build parameters in the format: KEY1=VALUE KEY2=VALUE'
     required: false
+  file-parameters:
+    description: 'file parameters in the format: FILEPARAMNAME=@FILEPATH'
+    required: false
   
 runs:
   using: "composite"
@@ -43,6 +46,7 @@ runs:
         userName=${{ inputs.jenkins-username }}
         password=${{ inputs.jenkins-pat }}
         parameters="${{ inputs.parameters }}"
+        fileparameters="${{ inputs.file-parameters }}"
 
         BUILDCMD="build"
         PARAMARGS=""
@@ -58,6 +62,15 @@ runs:
           BUILDCMD="buildWithParameters?${PARAMARGS}"
         fi
 
+        FILEPARAMARGS=""
+        if [[ -n "$fileparameters" ]]; then
+          echo "FILEPARAMS: $FILEPARAMARGS"
+          for param in $fileparameters; do
+            FILEPARAMARGS="${FILEPARAMARGS} -F ${param}"
+            echo "FILEPARAMARGS: $FILEPARAMARGS"
+          done
+        fi
+
         startTime=$(date)
         startTimeSeconds=$(date -d "$startTime" +%s) 
         endTime=$(date -d "$startTime + $timeoutValue seconds")
@@ -69,7 +82,7 @@ runs:
         #Generate Crumb value
         CRUMB=`curl -s -u "$userName:$password" $urlOfJenkinsServer'/crumbIssuer/api/xml?xpath=concat(//crumbRequestField,":",//crumb)'`
         echo "curl -I -s -X POST -u \"$userName:$password\" -H \"$CRUMB\" \"$urlOfJenkinsServer\"/job/\"$jenkinsJobName/$BUILDCMD\""
-        TRIGGERJOBJSON=$(curl -I -s -X POST -u "$userName:$password" "$PARAMARGS" -H "$CRUMB" "$urlOfJenkinsServer"/job/"$jenkinsJobName/$BUILDCMD")
+        TRIGGERJOBJSON=$(curl -I -s -X POST -u "$userName:$password" "$PARAMARGS" -H "$CRUMB" "$urlOfJenkinsServer"/job/"$jenkinsJobName/$BUILDCMD" $FILEPARAMARGS)
         
         if [[ $verbose == true ]]; then
           echo "Results of Triggering The Job:"
