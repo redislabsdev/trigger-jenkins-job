@@ -143,6 +143,7 @@ runs:
           fi
           echo "Job URL retrieved"
           echo "--------------------------------------"
+          BUILDNUMBER=${BASH_REMATCH[2]};
           BUILDURL=${BASH_REMATCH[3]};
           if [[ "${BASH_REMATCH[1]}" == "true" ]]; then
             echo "Build Blocked. Exiting script with error"
@@ -229,10 +230,22 @@ runs:
         case $RESULT in
             SUCCESS)
                 echo "Build completed successfully"
+
+                echo "### Jenkins build job completed successfully" >> $GITHUB_STEP_SUMMARY
+                echo "\n" >> $GITHUB_STEP_SUMMARY
+                echo "Build Number: $BUILDNUMBER \n" >> $GITHUB_STEP_SUMMARY
+                echo "Build Url: $BUILDURL" >> $GITHUB_STEP_SUMMARY
+
                 exit 0
                 ;;
             *)
                 echo "Build DID NOT COMPLETE successfully"
+
+                echo "### Jenkins build job failure" >> $GITHUB_STEP_SUMMARY
+                echo "\n" >> $GITHUB_STEP_SUMMARY
+                echo "Build Number: $BUILDNUMBER \n" >> $GITHUB_STEP_SUMMARY
+                echo "Build Url: $BUILDURL" >> $GITHUB_STEP_SUMMARY
+
                 exit 1
                 ;;
         esac
