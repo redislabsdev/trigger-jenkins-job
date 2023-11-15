@@ -71,9 +71,9 @@ runs:
           done
         fi
 
-        startTime=$(date)
+        startTime=$(date -u)
         startTimeSeconds=$(date -d "$startTime" +%s) 
-        endTime=$(date -d "$startTime + $timeoutValue seconds")
+        endTime=$(date -u -d "$startTime + $timeoutValue seconds")
         endTimeSeconds=$(date -d "$endTime" +%s)
 
         #STEP 1: Trigger the Jenkins Job
