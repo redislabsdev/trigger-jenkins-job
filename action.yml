@@ -232,8 +232,7 @@ runs:
                 echo "Build completed successfully"
 
                 echo "### Jenkins build job completed successfully" >> $GITHUB_STEP_SUMMARY
-                echo "\n" >> $GITHUB_STEP_SUMMARY
-                echo "Build Number: $BUILDNUMBER \n" >> $GITHUB_STEP_SUMMARY
+                echo "Build Number: $BUILDNUMBER" >> $GITHUB_STEP_SUMMARY
                 echo "Build Url: $BUILDURL" >> $GITHUB_STEP_SUMMARY
 
                 exit 0
@@ -242,8 +241,7 @@ runs:
                 echo "Build DID NOT COMPLETE successfully"
 
                 echo "### Jenkins build job failure" >> $GITHUB_STEP_SUMMARY
-                echo "\n" >> $GITHUB_STEP_SUMMARY
-                echo "Build Number: $BUILDNUMBER \n" >> $GITHUB_STEP_SUMMARY
+                echo "Build Number: $BUILDNUMBER" >> $GITHUB_STEP_SUMMARY
                 echo "Build Url: $BUILDURL" >> $GITHUB_STEP_SUMMARY
 
                 exit 1
