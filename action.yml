@@ -234,6 +234,11 @@ runs:
                 echo "### Jenkins build job completed successfully" >> $GITHUB_STEP_SUMMARY
                 echo "Build Number: $BUILDNUMBER" >> $GITHUB_STEP_SUMMARY
                 echo "Build Url: $BUILDURL" >> $GITHUB_STEP_SUMMARY
+                
+                # Output details to use in next steps
+                echo "build_url=$BUILDURL" >> $GITHUB_OUTPUT
+                echo "build_number=$BUILDNUMBER" >> $GITHUB_OUTPUT
+                echo "build_result=$RESULT" >> $GITHUB_OUTPUT
 
                 exit 0
                 ;;
@@ -243,7 +248,12 @@ runs:
                 echo "### Jenkins build job failure" >> $GITHUB_STEP_SUMMARY
                 echo "Build Number: $BUILDNUMBER" >> $GITHUB_STEP_SUMMARY
                 echo "Build Url: $BUILDURL" >> $GITHUB_STEP_SUMMARY
-
+                
+                # Output details to use in next steps
+                echo "build_url=$BUILDURL" >> $GITHUB_OUTPUT
+                echo "build_number=$BUILDNUMBER" >> $GITHUB_OUTPUT
+                echo "build_result=$RESULT" >> $GITHUB_OUTPUT
+                
                 exit 1
                 ;;
         esac
