@@ -31,7 +31,17 @@ inputs:
   file-parameters:
     description: 'file parameters in the format: FILEPARAMNAME=@FILEPATH'
     required: false
-  
+outputs:
+  build-url:
+    description: URL of Build triggered by action
+    value: ${{ steps.trigger-jenkins-job-using-api.outputs.build_url }}
+  build-number:
+    description: Number of Build triggered by action
+    value: ${{ steps.trigger-jenkins-job-using-api.outputs.build_number }}
+  build-result:
+    description: Result of Build triggered by action
+    value: ${{ steps.trigger-jenkins-job-using-api.outputs.build_result }}
+
 runs:
   using: "composite"
   steps:
