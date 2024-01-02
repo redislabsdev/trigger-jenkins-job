@@ -31,7 +31,17 @@ inputs:
   file-parameters:
     description: 'file parameters in the format: FILEPARAMNAME=@FILEPATH'
     required: false
-  
+outputs:
+  build-url:
+    description: URL of Build triggered by action
+    value: ${{ steps.trigger-jenkins-job-using-api.outputs.build_url }}
+  build-number:
+    description: Number of Build triggered by action
+    value: ${{ steps.trigger-jenkins-job-using-api.outputs.build_number }}
+  build-result:
+    description: Result of Build triggered by action
+    value: ${{ steps.trigger-jenkins-job-using-api.outputs.build_result }}
+
 runs:
   using: "composite"
   steps:
@@ -234,6 +244,11 @@ runs:
                 echo "### Jenkins build job completed successfully" >> $GITHUB_STEP_SUMMARY
                 echo "Build Number: $BUILDNUMBER" >> $GITHUB_STEP_SUMMARY
                 echo "Build Url: $BUILDURL" >> $GITHUB_STEP_SUMMARY
+                
+                # Output details to use in next steps
+                echo "build_url=$BUILDURL" >> $GITHUB_OUTPUT
+                echo "build_number=$BUILDNUMBER" >> $GITHUB_OUTPUT
+                echo "build_result=$RESULT" >> $GITHUB_OUTPUT
 
                 exit 0
                 ;;
@@ -243,7 +258,12 @@ runs:
                 echo "### Jenkins build job failure" >> $GITHUB_STEP_SUMMARY
                 echo "Build Number: $BUILDNUMBER" >> $GITHUB_STEP_SUMMARY
                 echo "Build Url: $BUILDURL" >> $GITHUB_STEP_SUMMARY
-
+                
+                # Output details to use in next steps
+                echo "build_url=$BUILDURL" >> $GITHUB_OUTPUT
+                echo "build_number=$BUILDNUMBER" >> $GITHUB_OUTPUT
+                echo "build_result=$RESULT" >> $GITHUB_OUTPUT
+                
                 exit 1
                 ;;
         esac
