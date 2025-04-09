@@ -167,6 +167,9 @@ runs:
         fi
 
         #At this point, we have the URL for the build job, so now we can query the status of the job until something happens
+        echo "### Jenkins build triggered" >> $GITHUB_STEP_SUMMARY
+        echo "Build Number: $BUILDNUMBER" >> $GITHUB_STEP_SUMMARY
+        echo "Build Url: $BUILDURL" >> $GITHUB_STEP_SUMMARY
 
         #STEP 5: Using the Job URL, query the job until we get some sort of code returned (success, failure, etc) and take appropriate steps
         #Potential Values: https://javadoc.jenkins-ci.org/hudson/model/Result.html
@@ -212,6 +215,7 @@ runs:
             currentTimeSeconds=$(date +%s)
             if [[ "$currentTimeSeconds" > "$endTimeSeconds" ]]; then
               echo "Timeout value reached. Exiting with error due to timeout"
+              echo ":red_circle: Timed out waiting for build result" >> $GITHUB_STEP_SUMMARY
               echo "--------------------------------------"
               exit 1
             fi
@@ -240,10 +244,7 @@ runs:
         case $RESULT in
             SUCCESS)
                 echo "Build completed successfully"
-
-                echo "### Jenkins build job completed successfully" >> $GITHUB_STEP_SUMMARY
-                echo "Build Number: $BUILDNUMBER" >> $GITHUB_STEP_SUMMARY
-                echo "Build Url: $BUILDURL" >> $GITHUB_STEP_SUMMARY
+                echo ":green_circle: Build completed successfully" >> $GITHUB_STEP_SUMMARY
                 
                 # Output details to use in next steps
                 echo "build_url=$BUILDURL" >> $GITHUB_OUTPUT
@@ -254,10 +255,7 @@ runs:
                 ;;
             *)
                 echo "Build DID NOT COMPLETE successfully"
-
-                echo "### Jenkins build job failure" >> $GITHUB_STEP_SUMMARY
-                echo "Build Number: $BUILDNUMBER" >> $GITHUB_STEP_SUMMARY
-                echo "Build Url: $BUILDURL" >> $GITHUB_STEP_SUMMARY
+                echo ":red_circle: Build DID NOT COMPLETE successfully" >> $GITHUB_STEP_SUMMARY
                 
                 # Output details to use in next steps
                 echo "build_url=$BUILDURL" >> $GITHUB_OUTPUT
