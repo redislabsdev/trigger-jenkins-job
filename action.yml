@@ -170,6 +170,9 @@ runs:
         echo "### Jenkins build triggered" >> $GITHUB_STEP_SUMMARY
         echo "Build Number: $BUILDNUMBER" >> $GITHUB_STEP_SUMMARY
         echo "Build Url: $BUILDURL" >> $GITHUB_STEP_SUMMARY
+        echo "### Jenkins build triggered"
+        echo "Build Number: $BUILDNUMBER"
+        echo "Build Url: $BUILDURL"
 
         #STEP 5: Using the Job URL, query the job until we get some sort of code returned (success, failure, etc) and take appropriate steps
         #Potential Values: https://javadoc.jenkins-ci.org/hudson/model/Result.html
